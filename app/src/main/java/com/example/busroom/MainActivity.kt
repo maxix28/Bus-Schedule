@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.busroom.ui.screen.StartScreen
+import com.example.busroom.ui.screen.allScreen
 import com.example.busroom.ui.theme.BusRoomTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartScreen()
+                    allScreen()
                 }
             }
         }
