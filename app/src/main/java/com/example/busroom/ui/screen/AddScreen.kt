@@ -2,13 +2,19 @@ package com.example.busroom.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -17,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -155,6 +162,9 @@ fun pre(){
 fun allScreen(modifier: Modifier= Modifier,
               viewModel : ScheduleViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
                   factory = AppViewModelProvider.Factory)){
+
+    val ListUIState = viewModel.ListUIState.collectAsState()
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -208,7 +218,30 @@ fun allScreen(modifier: Modifier= Modifier,
         ) {
         Text("This button")
     }
+
+
+        LazyColumn(){
+        items(ListUIState.value.list){
+            ItemScreen(it.StationName, it.StationTime)
+            Spacer(modifier = modifier.height(8.dp))
+        }
+        }
     }
 
+
+}
+
+@Composable
+fun ItemScreen(name:String, time : String ,modifier: Modifier=Modifier){
+    Card(){
+        Row(modifier.fillMaxWidth()){
+
+            Text(text = name, modifier = modifier.padding(start = 5.dp))
+            Spacer(modifier = modifier.weight(1f))
+            Text(text = time, modifier = modifier.padding(end = 5.dp))
+
+
+        }
+    }
 
 }

@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.busroom.data.Schedule
 import com.example.busroom.data.StationRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
@@ -14,12 +18,23 @@ data class ScheduleUiState(
     var station : String="",
     var time : String =""
 )
+data class  ListScheduleUI(
+    var list :List<Schedule> = listOf()
+)
 class ScheduleViewModel(private val stationRepository: StationRepository): ViewModel() {
-
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
     var itemUiState : ScheduleUiState by mutableStateOf(ScheduleUiState())
     private set
 
-
+var ListUIState: StateFlow<ListScheduleUI> = stationRepository.getAllStationStream().map{
+    ListScheduleUI(it)
+} .stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+    initialValue = ListScheduleUI()
+)
 
 
     fun updateUiState(schedule: Schedule) {
@@ -39,8 +54,8 @@ class ScheduleViewModel(private val stationRepository: StationRepository): ViewM
 
                   println("STTTTART")
                   stationRepository.insertStation(itemUiState.toSchedule())
-                  itemUiState.station=""
-                  itemUiState.time=""
+                  val curretnUi =  itemUiState
+                  itemUiState = curretnUi.copy(time = "", station = "")
 
           }
 
